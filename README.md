@@ -7,12 +7,19 @@ This app completely revolutionized the way I read text.
 ## Getting Started
 
 [F2] - Reads paragraph text positioned under the cursor
+
 [Esc] - Stops Reading
+
 [Esc] x 3 - Exits the App
+
 [F6] - 1st click - Double Click mode (Click F2 twice to read text)
+
      - 2nd click - Pause the App
+     
      - 3rd click - Single click mode (Click F2 once to read text)
+     
 [F7] - Decrease reading Speed
+
 [F8] - Increase reading Speed
 
 ## Things to notice
@@ -49,5 +56,6 @@ This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-Thanks you for everyone in the amazing open source community
+Thanks you for everyone in the amazing open source community.
+
 And thank you google. I couldn't have done this without you.
