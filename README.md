@@ -1,6 +1,6 @@
 # F2-Reader
 
-A simple text to voice app. Simply hover any text and click F2.
+A simple text to voice app. Simply hover any text and press F2.
 
 This app completely revolutionized the way I read text.
 
