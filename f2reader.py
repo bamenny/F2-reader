@@ -16,7 +16,8 @@ toaster = ToastNotifier() #For Desktop Notifications
 #Reseting Variables
 ReadingPaused = False #False means App Not Paused, True means App paused
 Esc_counter = 0 #Being used to count how many times ESC was pressed consecutively
-FirstClick = time.time()
+F2FirstClick = time.time()
+F4FirstClick = time.time()
 RequireDoubleClickForReading = False #True means user must click F2 twice to activate reading
 
 #Settings
@@ -80,7 +81,8 @@ def textGUI(Pressedkey):
     print("")
     print("Keys")
     print("----")
-    print("F2    : Read")
+    print("F2    : Hover Read")
+    print("F4 x2 : Read Selected / Marked Text")
     print("Esc   : Stop Reading")
     print("F6    : Pause / Double Click / Single Click")
     print("F7    : Speed Down")
@@ -89,17 +91,27 @@ def textGUI(Pressedkey):
     print("--------------")
 
     if ReadingPaused == False:
-        print("Status: ACTIVE")
+        StatusString = "Status: ACTIVE"
+
+        if RequireDoubleClickForReading == False:
+            StatusString = StatusString + ", " + "SINGLE Click Mode"
+        else:
+            StatusString = StatusString + ", " + "DOUBLE Click Mode"
     elif ReadingPaused == True:
-        print("Status: PAUSED")
+        StatusString = "Status: PAUSED"
+
+
+
+    print(StatusString)
 
 # Exectue functions based on the clicked key
 def on_press(key):
 
     global ReadingPaused
     global Esc_counter
-    global FirstClick
-    global SecondClick
+    global F2FirstClick
+    global F4FirstClick
+    global F2SecondClick
     global RequireDoubleClickForReading
     global TranslationDestinationLanguage
 
@@ -113,18 +125,30 @@ def on_press(key):
     if key == keyboard.Key.f2:
         if ReadingPaused == False: #If User haven't click the pause button (F6)
             if RequireDoubleClickForReading == True:
-                SecondClick = time.time()
-                if SecondClick - FirstClick < DoubleClickMaxGap:
+                F2SecondClick = time.time()
+                if F2SecondClick - F2FirstClick < DoubleClickMaxGap:
                     tripleclick()
                     pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
                     stopReading() #optional, depends on the desired working mode
                     readThis(clipboard.paste())
-                FirstClick = SecondClick
+                F2FirstClick = F2SecondClick
             else:
                 tripleclick()
                 pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
                 stopReading() #optional, depends on the desired working mode
                 readThis(clipboard.paste())
+
+            textGUI('{0}'.format(key))
+
+    if key == keyboard.Key.f4:
+        if ReadingPaused == False: #If User haven't click the pause button (F6)
+            F4SecondClick = time.time()
+            if F4SecondClick - F4FirstClick < DoubleClickMaxGap:
+                pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
+                stopReading() #optional, depends on the desired working mode
+                readThis(clipboard.paste())
+            F4FirstClick = F4SecondClick
+
 
             textGUI('{0}'.format(key))
 
