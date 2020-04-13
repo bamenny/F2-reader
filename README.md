@@ -32,6 +32,7 @@ That means that the app will overwrite your clipboard. Just keep that in mind.
 
 Uses Python 3.8
 Works on Windows 10 with the English TTS engine installed (Usually it is installed by default)
+Will probably work on other versions of Windows
 
 Install all relevant Dependencies:
 import win32com.client as wincl #For the TTS engine
