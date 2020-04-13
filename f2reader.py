@@ -14,21 +14,17 @@ translator = Translator() #For Google Translator
 toaster = ToastNotifier() #For Desktop Notifications
 
 #Reseting Variables
-ReadingPaused = 0
-Esc_counter = 0
+ReadingPaused = False #False means App Not Paused, True means App paused
+Esc_counter = 0 #Being used to count how many times ESC was pressed consecutively
 FirstClick = time.time()
-RequireDoubleClickForReading = False
+RequireDoubleClickForReading = False #True means user must click F2 twice to activate reading
 
 #Settings
-speak.Rate = 6
-DoubleClickMaxGap = 0.5
-TranslationDestinationLanguage = 'he'
-OpeningStatement = "Hi, welcome to the F2 Reader. You Rock."
-NumberOfEscsNeededForQuitingTheApp = 3
-
-#Installs:
-#googletrans
-#win10toast
+speak.Rate = 6 #Rate between -10 to 10
+DoubleClickMaxGap = 0.5 #Max duration between double press on F2
+TranslationDestinationLanguage = 'he' #Traget Language for Translation
+OpeningStatement = "Hi, welcome to the F2 Reader. You Rock." #opening Statement
+NumberOfEscsNeededForQuitingTheApp = 3 #Number of consecutive ESCs needed to quit the app
 
 # Reads text received as an argument
 def readThis(TextToRead):
@@ -76,6 +72,7 @@ def textGUI(Pressedkey):
     global DoubleClickMaxGap
 
     clear()
+
     print("F2 Reader")
     print("--------------")
     print("Read Speed: [" + str(speak.Rate) + "]")
@@ -91,10 +88,10 @@ def textGUI(Pressedkey):
     print(str(NumberOfEscsNeededForQuitingTheApp) + " Esc : Exit (" + str(Esc_counter) + ")" )
     print("--------------")
 
-    if ReadingPaused == 0:
+    if ReadingPaused == False:
         print("Status: ACTIVE")
-    elif ReadingPaused==1:
-        print("Statis: PAUSED")
+    elif ReadingPaused == True:
+        print("Status: PAUSED")
 
 # Exectue functions based on the clicked key
 def on_press(key):
@@ -106,34 +103,35 @@ def on_press(key):
     global RequireDoubleClickForReading
     global TranslationDestinationLanguage
 
-    if key == keyboard.Key.esc:
-        stopReading()
+    if key == keyboard.Key.esc: #If user click the ESC key
+        stopReading() #stop current outloud reading activity
         Esc_counter = Esc_counter + 1
         textGUI('{0}'.format(key))
-    else:
+    else: #If any other key than ESC was clicked, reset the counter
         Esc_counter = 0
 
     if key == keyboard.Key.f2:
-        if ReadingPaused == 0: #If User haven't click the pause button
+        if ReadingPaused == False: #If User haven't click the pause button (F6)
             if RequireDoubleClickForReading == True:
                 SecondClick = time.time()
                 if SecondClick - FirstClick < DoubleClickMaxGap:
                     tripleclick()
-                    pya.hotkey('ctrl', 'c')
+                    pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
                     stopReading() #optional, depends on the desired working mode
                     readThis(clipboard.paste())
                 FirstClick = SecondClick
             else:
                 tripleclick()
-                pya.hotkey('ctrl', 'c')
+                pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
                 stopReading() #optional, depends on the desired working mode
                 readThis(clipboard.paste())
+
             textGUI('{0}'.format(key))
 
     if key == keyboard.Key.f3: #Google Translation
-        if ReadingPaused == 0: #If app was not paused
+        if ReadingPaused == False: #If app was not paused
             doubleclick()
-            pya.hotkey('ctrl', 'c')
+            pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
             ResultStr = str(translator.translate(clipboard.paste(), dest=TranslationDestinationLanguage))
 
             #Creates Subtext of the translated word only and removes all other unnecesery text
@@ -149,43 +147,41 @@ def on_press(key):
 
     if key == keyboard.Key.f6: #Pause App
 
-        if ReadingPaused == 0 and RequireDoubleClickForReading == False:
+        if ReadingPaused == False and RequireDoubleClickForReading == False:
             RequireDoubleClickForReading = True
             toaster.show_toast("F2 DoubleClick Activated", "DoubleClick", threaded=True, icon_path=None, duration=2)
 
-        elif ReadingPaused == 0 and RequireDoubleClickForReading == True:
+        elif ReadingPaused == False and RequireDoubleClickForReading == True:
             RequireDoubleClickForReading = False
-            ReadingPaused=1
+            ReadingPaused=True
             toaster.show_toast("F2 Paused", "Paused", threaded=True, icon_path=None, duration=2)
 
-        elif ReadingPaused==1:
+        elif ReadingPaused==True:
             RequireDoubleClickForReading = False
-            ReadingPaused=0
+            ReadingPaused=False
             toaster.show_toast("F2 Activated", "Activated", threaded=True, icon_path=None, duration=2)
 
         textGUI('{0}'.format(key))
 
-    if key == keyboard.Key.f7:
+    if key == keyboard.Key.f7: #Decrease Reading Speed
         decSpeed()
         textGUI('{0}'.format(key))
 
 
-    if key == keyboard.Key.f8:
+    if key == keyboard.Key.f8: #Increase Reading Speed
         incSpeed()
         textGUI('{0}'.format(key))
-
-#    textGUI('{0}'.format(key)) #removed since it creats delays
 
 # Welcome statement
 readThis(OpeningStatement)
 
 # Assiging event to function
-listener = keyboard.Listener(
-    on_press=on_press)
+listener = keyboard.Listener(on_press=on_press)
 
 # initiating listener
 listener.start()
 
 textGUI('')
+
 while Esc_counter < NumberOfEscsNeededForQuitingTheApp:
     time.sleep(.01)
