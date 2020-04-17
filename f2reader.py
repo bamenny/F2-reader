@@ -84,9 +84,10 @@ def textGUI(Pressedkey):
     print("F2    : Hover Read")
     print("F4 x2 : Read Selected / Marked Text")
     print("Esc   : Stop Reading")
-    print("F6    : Pause / Double Click / Single Click")
+    print("F6    : Pause / Activate")
     print("F7    : Speed Down")
     print("F8    : Speed Up")
+    print("F9    : Double / Single Click more")
     print(str(NumberOfEscsNeededForQuitingTheApp) + " Esc : Exit (" + str(Esc_counter) + ")" )
     print("--------------")
 
@@ -171,19 +172,13 @@ def on_press(key):
 
     if key == keyboard.Key.f6: #Pause App
 
-        if ReadingPaused == False and RequireDoubleClickForReading == False:
-            RequireDoubleClickForReading = True
-            toaster.show_toast("F2 DoubleClick Activated", "DoubleClick", threaded=True, icon_path=None, duration=2)
-
-        elif ReadingPaused == False and RequireDoubleClickForReading == True:
-            RequireDoubleClickForReading = False
+        if ReadingPaused == False:
             ReadingPaused=True
-            toaster.show_toast("F2 Paused", "Paused", threaded=True, icon_path=None, duration=2)
+            toaster.show_toast("F2 Paused", "F2 Paused", threaded=True, icon_path=None, duration=1)
 
-        elif ReadingPaused==True:
-            RequireDoubleClickForReading = False
-            ReadingPaused=False
-            toaster.show_toast("F2 Activated", "Activated", threaded=True, icon_path=None, duration=2)
+        else:
+            ReadingPaused = False
+            toaster.show_toast("F2 Activated", "Activated", threaded=True, icon_path=None, duration=1)
 
         textGUI('{0}'.format(key))
 
@@ -195,6 +190,16 @@ def on_press(key):
     if key == keyboard.Key.f8: #Increase Reading Speed
         incSpeed()
         textGUI('{0}'.format(key))
+
+    if key == keyboard.Key.f9: #Double / Single click mode
+
+        if RequireDoubleClickForReading == False:
+            RequireDoubleClickForReading = True
+            toaster.show_toast("F2 DoubleClick Activated", "DoubleClick", threaded=True, icon_path=None, duration=1)
+
+        else:
+           RequireDoubleClickForReading = False
+           toaster.show_toast("F2 Singleclick Activated", "Singleclick", threaded=True, icon_path=None, duration=1)
 
 # Welcome statement
 readThis(OpeningStatement)
