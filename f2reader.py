@@ -25,7 +25,7 @@ speak.Rate = 6 #Rate between -10 to 10
 DoubleClickMaxGap = 0.5 #Max duration between double press on F2
 TranslationDestinationLanguage = 'he' #Traget Language for Translation
 OpeningStatement = "Hi, welcome to the F2 Reader. You Rock." #opening Statement
-NumberOfEscsNeededForQuitingTheApp = 3 #Number of consecutive ESCs needed to quit the app
+NumberOfEscsNeededForQuitingTheApp = 5 #Number of consecutive ESCs needed to quit the app
 
 # Reads text received as an argument
 def readThis(TextToRead):
