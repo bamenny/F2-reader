@@ -27,8 +27,22 @@ TranslationDestinationLanguage = 'he' #Traget Language for Translation
 OpeningStatement = "Hi, welcome to the F2 Reader. You Rock." #opening Statement
 NumberOfEscsNeededForQuitingTheApp = 5 #Number of consecutive ESCs needed to quit the app
 
+def analyzeAscii(Text):
+    print("Text Length is: " + str(len(Text)))
+    i = 0
+    while i < len(Text):
+        print(Text[i] + ": " + str(ord(Text[i])))
+        i=i+1
+
 # Reads text received as an argument
 def readThis(TextToRead):
+
+    TextToRead = TextToRead.replace(chr(10), " ")
+    TextToRead = TextToRead.replace(chr(13), " ")
+
+    # analyzeAscii(TextToRead) #For Debugging only
+
+
     speak.Speak(TextToRead, 1) #SVSFlagsAsync = 1
     # Other flags can be found here:
     # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ms720892(v%3Dvs.85)
@@ -55,12 +69,16 @@ def tripleclick():
     pya.click()
     pya.click()
     time.sleep(.01)
+    pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
+    time.sleep(.03)
 
 # Invokes mouse double click
 def doubleclick():
     pya.click()
     pya.click()
     time.sleep(.01)
+    pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
+    time.sleep(.03)
 
 # Clears the console screen
 def clear():
@@ -129,13 +147,13 @@ def on_press(key):
                 F2SecondClick = time.time()
                 if F2SecondClick - F2FirstClick < DoubleClickMaxGap:
                     tripleclick()
-                    pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
+                    #pya.hotkey('ctrl', 'c')  #copy selected text to the clipboard
                     stopReading() #optional, depends on the desired working mode
                     readThis(clipboard.paste())
                 F2FirstClick = F2SecondClick
             else:
                 tripleclick()
-                pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
+                #pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
                 stopReading() #optional, depends on the desired working mode
                 readThis(clipboard.paste())
 
@@ -156,7 +174,7 @@ def on_press(key):
     if key == keyboard.Key.f3: #Google Translation
         if ReadingPaused == False: #If app was not paused
             doubleclick()
-            pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
+            #pya.hotkey('ctrl', 'c') #copy selected text to the clipboard
             ResultStr = str(translator.translate(clipboard.paste(), dest=TranslationDestinationLanguage))
 
             #Creates Subtext of the translated word only and removes all other unnecesery text
